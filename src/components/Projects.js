@@ -137,7 +137,7 @@ const ProjectsShowcase = () => {
   ];
 
   return (
-    <section className="min-h-screen bg-zinc-950 py-20 px-8">
+    <section id="projects" className="min-h-screen w-full bg-zinc-950 py-20">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-5xl font-bold text-center text-lime-400 mb-12">Featured Projects</h2>
         <div className="space-y-32">
