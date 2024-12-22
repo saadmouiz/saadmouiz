@@ -2,98 +2,95 @@ import { Link } from 'react-scroll';
 import { useState } from 'react';
 
 const Navbar = () => {
-  const [activeLink, setActiveLink] = useState('home');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const navLinks = [
-    { to: "home", label: "HOME" },
-    { to: "about", label: "ABOUT" },
-    { to: "projects", label: "PROJECTS" },
-    { to: "contact", label: "CONTACT" }
-  ];
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const navItems = ['HOME', 'ABOUT', 'PROJECTS', 'CONTACT'];
 
   return (
     <nav className="fixed w-full top-0 z-50 bg-zinc-900/80 backdrop-blur-lg">
-      {/* Bordure animée */}
-      <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-lime-500/20 to-transparent"></div>
-      
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
-          {/* Logo avec effet hover */}
-          <div className="relative group">
-            <a href="#" className="text-2xl font-bold text-lime-400 transition-all duration-300 group-hover:text-white">
-              &lt;SAAD/&gt;
-            </a>
-            {/* Effet de glow au hover */}
-            <div className="absolute inset-0 bg-lime-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          </div>
+          <Link 
+            to="home"
+            spy={true}
+            smooth={true}
+            offset={-100}
+            duration={500}
+            className="text-2xl font-bold text-lime-400 glow cursor-pointer"
+          >
+            &lt;SAAD/&gt;
+          </Link>
           
-          {/* Navigation Links avec effets améliorés */}
+          {/* Menu Desktop */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map(({ to, label }) => (
+            {navItems.map((item) => (
               <Link 
-                key={to}
-                to={to}
+                key={item}
+                to={item.toLowerCase()}
                 spy={true}
                 smooth={true}
                 offset={-100}
                 duration={500}
-                onSetActive={() => setActiveLink(to)}
-                className="relative group"
+                className="text-zinc-400 hover:text-lime-400 transition-all duration-300 cursor-pointer"
               >
-                {/* Texte du lien */}
-                <span className={`text-sm tracking-wider font-medium ${
-                  activeLink === to 
-                    ? 'text-lime-400' 
-                    : 'text-zinc-400'
-                } group-hover:text-lime-400 transition-all duration-300`}>
-                  {label}
-                </span>
-
-                {/* Ligne d'animation au hover */}
-                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-lime-400/50 to-lime-400 group-hover:w-full transition-all duration-300"></span>
-                
-                {/* Point indicateur du lien actif */}
-                {activeLink === to && (
-                  <span className="absolute -left-3 top-1/2 w-1.5 h-1.5 bg-lime-400 rounded-full transform -translate-y-1/2"></span>
-                )}
-
-                {/* Effet de glow au hover */}
-                <span className="absolute inset-0 bg-lime-400/0 group-hover:bg-lime-400/5 rounded-lg transition-all duration-300 blur-xl"></span>
+                {item}
               </Link>
             ))}
+          </div>
 
-            {/* Bouton Call-to-Action */}
-            <Link 
-              to="contact"
-              spy={true}
-              smooth={true}
-              offset={-100}
-              duration={500}
-              className="relative group"
-            >
-              <span className="relative z-10 px-6 py-2 bg-lime-400/10 border border-lime-400/20 rounded-full text-lime-400 text-sm font-medium hover:bg-lime-400/20 transition-all duration-300">
-                Let's Connect
-              </span>
-              {/* Effet de glow au hover */}
-              <div className="absolute inset-0 bg-lime-400/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-            </Link>
+          {/* Bouton Menu Mobile */}
+          <button 
+            className="md:hidden text-lime-400 focus:outline-none"
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            {!isMenuOpen ? (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        {/* Menu Mobile */}
+        <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
+          <div className="flex flex-col items-center gap-4 mt-4 border-t border-zinc-800 pt-4">
+            {navItems.map((item) => (
+              <Link 
+                key={item}
+                to={item.toLowerCase()}
+                spy={true}
+                smooth={true}
+                offset={-100}
+                duration={500}
+                onClick={() => setIsMenuOpen(false)}
+                className="text-zinc-400 hover:text-lime-400 transition-all duration-300 cursor-pointer py-2 w-full text-center"
+              >
+                {item}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Bordure animée du bas */}
-      <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-lime-500/10 to-transparent"></div>
+      {/* Overlay pour le menu mobile */}
+      {isMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm md:hidden"
+          onClick={() => setIsMenuOpen(false)}
+          style={{ zIndex: -1 }}
+        ></div>
+      )}
     </nav>
   );
 };
 
 export default Navbar;
-
-// Ajoutez ces keyframes dans votre fichier CSS global
-const style = document.createElement('style');
-style.textContent = `
-  .glow {
-    text-shadow: 0 0 10px rgba(134, 239, 172, 0.5);
-  }
-`;
-document.head.appendChild(style);
